@@ -1,0 +1,19 @@
+.DS_Store
+*.xcuserstate
+*.swp
+
+# Build output
+build/
+*.app
+*.dmg
+*.zip
+*.sha256
+
+# Local validation artifacts
+work/
+tmp/
+*.log
+
+# Swift compiler caches
+.build/
+DerivedData/
