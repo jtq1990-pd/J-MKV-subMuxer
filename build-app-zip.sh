@@ -3,7 +3,7 @@ set -euo pipefail
 
 PRODUCT_NAME="J-MKV-subMuxer"
 BUNDLE_ID="com.jmkv.submuxer"
-VERSION="0.1.3"
+VERSION="0.1.4"
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 OUTPUT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"

@@ -485,6 +485,18 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKScriptMessageHandler
         )
     }
 
+    private func isVideoFile(_ url: URL) -> Bool {
+        videoExtensions.contains(url.pathExtension.lowercased())
+    }
+
+    private func isGeneratedOutputVideo(_ url: URL) -> Bool {
+        isVideoFile(url) && url.deletingPathExtension().lastPathComponent.hasSuffix("_mkv封装")
+    }
+
+    private func isBatchSourceVideo(_ url: URL) -> Bool {
+        isVideoFile(url) && !isGeneratedOutputVideo(url)
+    }
+
     private func tasksFromFolders(_ folders: [String], language: String, firstDefault: Bool, recursive: Bool) -> (tasks: [MuxTask], warnings: [String]) {
         var result: [MuxTask] = []
         var warnings: [String] = []
@@ -507,7 +519,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKScriptMessageHandler
             }
 
             for (_, files) in filesByDirectory {
-                let videos = files.filter { videoExtensions.contains($0.pathExtension.lowercased()) }
+                let videos = files.filter { isBatchSourceVideo($0) }
                 let subtitles = files.filter { subtitleExtensions.contains($0.pathExtension.lowercased()) }
                 if videos.isEmpty {
                     continue
@@ -530,7 +542,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKScriptMessageHandler
         let videoURL = URL(fileURLWithPath: video)
         let dir = videoURL.deletingLastPathComponent()
         let files = (try? FileManager.default.contentsOfDirectory(at: dir, includingPropertiesForKeys: [.isRegularFileKey], options: [.skipsHiddenFiles])) ?? []
-        let videos = files.filter { videoExtensions.contains($0.pathExtension.lowercased()) }
+        let videos = files.filter { isBatchSourceVideo($0) }
         let subtitles = files.filter { subtitleExtensions.contains($0.pathExtension.lowercased()) }
         return matchSubtitles(video: videoURL, videosInDirectory: videos, subtitles: subtitles, language: language, firstDefault: firstDefault)
     }
